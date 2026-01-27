@@ -28,3 +28,14 @@
   from { transform: translate(0, 0); }
   to { transform: translate(100px, 100px); }
 }
+
+/* Ajoute ça à la fin de ton index.css */
+.prose table {
+  @apply w-full border-collapse border border-white/10 my-4 bg-white/5 rounded-lg overflow-hidden;
+}
+.prose th {
+  @apply bg-white/10 p-2 text-left text-white/80;
+}
+.prose td {
+  @apply border-t border-white/10 p-2 text-white/80;
+}

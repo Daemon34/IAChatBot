@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -45,7 +47,7 @@ function App() {
       <div className="bg-blob bg-indigo-600 top-[-10%] left-[-10%]" />
       <div className="bg-blob bg-purple-600 bottom-[-10%] right-[-10%] [animation-delay:-5s]" />
 
-      <div className="w-full max-w-4xl h-[85vh] flex flex-col rounded-3xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-2xl overflow-hidden">
+      <div className="w-full max-w-7xl h-[95vh] flex flex-col rounded-3xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-2xl overflow-hidden">
         
         <header className="px-8 py-6 border-b border-white/10 bg-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -65,12 +67,14 @@ function App() {
 
           {messages.map((m, i) => (
             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-              <div className={`group relative max-w-[75%] px-5 py-3 rounded-2xl transition-all ${
+              <div className={`group relative px-5 py-3 rounded-2xl transition-all ${
                 m.role === 'user' 
                   ? 'bg-indigo-600/80 text-white rounded-br-none shadow-lg shadow-indigo-500/20' 
                   : 'bg-white/10 text-white/90 border border-white/10 backdrop-blur-md rounded-bl-none'
               }`}>
-                <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{m.content}</p>
+                  <div className="prose prose-invert prose-sm max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                  </div>
                 <span className={`text-[10px] opacity-0 group-hover:opacity-50 transition-opacity absolute bottom-[-18px] ${m.role === 'user' ? 'right-0' : 'left-0'}`}>
                   {m.timestamp}
                 </span>
