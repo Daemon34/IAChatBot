@@ -1,5 +1,8 @@
-var builder = WebApplication.CreateBuilder(args);
+using OpenAI;
+using OpenAI.Chat;
+using System.ClientModel;
 
+var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -22,12 +25,41 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+var GroqAPIKey = Environment.GetEnvironmentVariable("GROQ_API_KEY");
+if(String.IsNullOrEmpty(GroqAPIKey)){
+    throw new Exception("Make sure environment variable GROQ_API_KEY is set before starting the application !");
+}
 
-app.MapPost("/chat", (ChatMessage request) => {
-    return Results.Ok(new { text = $"L'IA a bien reçu : {request.Content}" });
+ChatClient client = new(
+    model: "openai/gpt-oss-20b",
+    credential: new ApiKeyCredential(Environment.GetEnvironmentVariable("GROQ_API_KEY")),
+    options: new OpenAIClientOptions()
+    {
+        Endpoint = new Uri("https://api.groq.com/openai/v1")
+    }
+);
+
+app.MapPost("/chat", async (ChatHistoryRequest request, ILogger<Program> logger) => {
+    try {
+        var history = new List<ChatMessage>();
+
+        foreach(var msg in request.Messages){
+            if(msg.Role == "user"){
+                history.Add(ChatMessage.CreateUserMessage(msg.Content));
+            } else {
+                history.Add(ChatMessage.CreateAssistantMessage(msg.Content));
+            }
+        }
+
+        ChatCompletion completion = await client.CompleteChatAsync(history);
+        return Results.Ok(new { role = "assistant", content = completion.Content[0].Text });
+    } catch (Exception ex) {
+        logger.LogError(ex, $"[ERREUR CRITIQUE] : {ex.Message}", request.Messages);
+        return Results.Problem("Erreur Interne Backend");
+    }
 });
 
 app.Run();
 
-public record ChatMessage(string Content);
+public record ChatHistoryRequest(List<MessageItem> Messages);
+public record MessageItem(string Role, string Content);
