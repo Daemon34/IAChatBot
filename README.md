@@ -22,6 +22,7 @@ https://github.com/user-attachments/assets/060836e4-febb-44b3-891f-92b5ac432897
 - Glassmorphism UI : A modern aesthetic featuring backdrop blurs, semi-transparent borders, and fluid CSS animations.
 - Developer Friendly : Full syntax highlighting for code blocks (C#, JS, Python, etc.) and formatted Markdown tables.
 - Security-First: API keys are managed via environment variables to prevent accidental leaks.
+<img width="1378" height="919" alt="SyntaxHighlight" src="https://github.com/user-attachments/assets/eec7c736-5d3e-41e0-8177-c50706487041" />
 
 # Installation & Setup
 ### 1. Backend (.NET)
