@@ -1,5 +1,5 @@
-# Neural-Chat: High-Performance Fullstack AI Assistant
-Neural-Chat is a sleek, modern chat application that bridges the gap between high-speed AI inference (Groq LPUs) and a robust enterprise-grade backend (.NET 10). It features a stunning Glassmorphism UI for a premium user experience.
+# High-Performance Fullstack AI Assistant
+This is a sleek, modern chat application that bridges the gap between high-speed AI inference (Groq LPUs) and a robust enterprise-grade backend (.NET 10). It features a stunning Glassmorphism UI for a premium user experience.
 
 https://github.com/user-attachments/assets/060836e4-febb-44b3-891f-92b5ac432897
 
