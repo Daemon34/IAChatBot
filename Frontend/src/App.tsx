@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -73,7 +75,37 @@ function App() {
                   : 'bg-white/10 text-white/90 border border-white/10 backdrop-blur-md rounded-bl-none'
               }`}>
                   <div className="prose prose-invert prose-sm max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                    <ReactMarkdown 
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        code(props) {
+                          const { children, className, node, ...rest } = props;
+                          const match = /language-(\w+)/.exec(className || '');
+                          const inline = !match;
+                        
+                          const { ref, ...sanitizedProps } = rest;
+                        
+                          return !inline ? (
+                            <div className="rounded-lg overflow-hidden my-4 border border-white/10 shadow-2xl">
+                              <SyntaxHighlighter
+                                {...sanitizedProps}
+                                style={atomDark as any}
+                                language={match[1]}
+                                PreTag="div"
+                              >
+                                {String(children).replace(/\n$/, '')}
+                              </SyntaxHighlighter>
+                            </div>
+                          ) : (
+                            <code className="bg-white/10 px-1 rounded text-pink-400" {...sanitizedProps}>
+                              {children}
+                            </code>
+                          );
+                        }
+                      }}
+                    >
+                      {m.content}
+                    </ReactMarkdown>
                   </div>
                 <span className={`text-[10px] opacity-0 group-hover:opacity-50 transition-opacity absolute bottom-[-18px] ${m.role === 'user' ? 'right-0' : 'left-0'}`}>
                   {m.timestamp}
